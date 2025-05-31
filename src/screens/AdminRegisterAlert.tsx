@@ -31,7 +31,7 @@ export default function AdminRegisterAlert() {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/alertas`, {
+      const response = await fetch(`${API_BASE}/catastrofe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -61,7 +61,7 @@ export default function AdminRegisterAlert() {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/alertas/${id}`, {
+      const response = await fetch(`${API_BASE}/catastrofe/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -91,7 +91,7 @@ export default function AdminRegisterAlert() {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/alertas/${id}`, {
+      const response = await fetch(`${API_BASE}/catastrofe/${id}`, {
         method: 'DELETE',
       });
 
@@ -142,19 +142,19 @@ export default function AdminRegisterAlert() {
             value={nome}
             onChangeText={setNome}
           />
-            <TextInput
-              placeholder="Descrição"
-              style={styles.input}
-              value={descricao}
-              onChangeText={setDescricao}
-            />
-            <TextInput
-              placeholder="Nível de gravidade (1 a 5)"
-              keyboardType="numeric"
-              style={styles.input}
-              value={gravidade}
-              onChangeText={setGravidade}
-            />
+          <TextInput
+            placeholder="Descrição"
+            style={styles.input}
+            value={descricao}
+            onChangeText={setDescricao}
+          />
+          <TextInput
+            placeholder="Nível de gravidade (1 a 5)"
+            keyboardType="numeric"
+            style={styles.input}
+            value={gravidade}
+            onChangeText={setGravidade}
+          />
           <TextInput
             placeholder="Localização"
             style={styles.input}
@@ -182,6 +182,7 @@ export default function AdminRegisterAlert() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
