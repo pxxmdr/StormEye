@@ -22,7 +22,15 @@ export default function AdminRegisterAlert() {
   const [gravidade, setGravidade] = useState('');
   const [localizacao, setLocalizacao] = useState('');
 
-  const API_BASE = 'http://localhost:8000';
+  const API_BASE = 'http://172.16.71.175:8080';
+
+  const limparCampos = () => {
+    setId('');
+    setNome('');
+    setDescricao('');
+    setGravidade('');
+    setLocalizacao('');
+  };
 
   const handleAdd = async () => {
     if (!nome || !descricao || !gravidade || !localizacao) {
@@ -30,15 +38,21 @@ export default function AdminRegisterAlert() {
       return;
     }
 
+    const nivel = parseInt(gravidade);
+    if (isNaN(nivel) || nivel < 1 || nivel > 5) {
+      Alert.alert('Erro', 'Nível de gravidade deve ser um número entre 1 e 5.');
+      return;
+    }
+
     try {
-      const response = await fetch(`${API_BASE}/catastrofe`, {
+      const response = await fetch(`${API_BASE}/catastrofes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nome_catastrofe: nome,
-          descricao,
-          nivel_gravidade: parseInt(gravidade),
-          localizacao,
+          nome: nome,
+          descricao: descricao,
+          nivelGravidade: nivel,
+          localizacao: localizacao,
         }),
       });
 
@@ -47,7 +61,8 @@ export default function AdminRegisterAlert() {
         limparCampos();
         navigation.navigate('AlertScreen');
       } else {
-        Alert.alert('Erro', 'Erro ao adicionar catástrofe.');
+        const errorText = await response.text();
+        Alert.alert('Erro', `Erro do servidor:\n${errorText}`);
       }
     } catch (err) {
       Alert.alert('Erro', 'Falha de conexão com o servidor.');
@@ -60,15 +75,21 @@ export default function AdminRegisterAlert() {
       return;
     }
 
+    const nivel = parseInt(gravidade);
+    if (isNaN(nivel) || nivel < 1 || nivel > 5) {
+      Alert.alert('Erro', 'Nível de gravidade deve ser um número entre 1 e 5.');
+      return;
+    }
+
     try {
-      const response = await fetch(`${API_BASE}/catastrofe/${id}`, {
+      const response = await fetch(`${API_BASE}/catastrofes/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nome_catastrofe: nome,
-          descricao,
-          nivel_gravidade: parseInt(gravidade),
-          localizacao,
+          nome: nome,
+          descricao: descricao,
+          nivelGravidade: nivel,
+          localizacao: localizacao,
         }),
       });
 
@@ -77,7 +98,8 @@ export default function AdminRegisterAlert() {
         limparCampos();
         navigation.navigate('AlertScreen');
       } else {
-        Alert.alert('Erro', 'Erro ao atualizar catástrofe.');
+        const errorText = await response.text();
+        Alert.alert('Erro', `Erro do servidor:\n${errorText}`);
       }
     } catch (err) {
       Alert.alert('Erro', 'Falha de conexão com o servidor.');
@@ -91,7 +113,7 @@ export default function AdminRegisterAlert() {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/catastrofe/${id}`, {
+      const response = await fetch(`${API_BASE}/catastrofes/${id}`, {
         method: 'DELETE',
       });
 
@@ -100,19 +122,12 @@ export default function AdminRegisterAlert() {
         limparCampos();
         navigation.navigate('AlertScreen');
       } else {
-        Alert.alert('Erro', 'Erro ao remover catástrofe.');
+        const errorText = await response.text();
+        Alert.alert('Erro', `Erro do servidor:\n${errorText}`);
       }
     } catch (err) {
       Alert.alert('Erro', 'Falha de conexão com o servidor.');
     }
-  };
-
-  const limparCampos = () => {
-    setId('');
-    setNome('');
-    setDescricao('');
-    setGravidade('');
-    setLocalizacao('');
   };
 
   return (
@@ -182,7 +197,6 @@ export default function AdminRegisterAlert() {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {

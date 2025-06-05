@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import colors from "../styles/colors";
@@ -13,82 +14,26 @@ import NavBarAdmin from "../components/NavBarAdmin";
 import NavBarClient from "../components/NavBarClient";
 import AlertCard from "../components/AlertCard";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../App";
 
-type Alerta = {
+type Catastrofe = {
   id: number;
   nome: string;
   descricao: string;
-  gravidade: number;
+  nivelGravidade: number;
   localizacao: string;
 };
-
-const mockAlertas: Alerta[] = [
-  {
-    id: 1,
-    nome: "Tornado em Oklahoma",
-    descricao: "Ventos extremamente fortes",
-    gravidade: 5,
-    localizacao: "Oklahoma, EUA",
-  },
-  {
-    id: 2,
-    nome: "Enchente em Veneza",
-    descricao: "Subida do nível da água",
-    gravidade: 3,
-    localizacao: "Veneza, Itália",
-  },
-  {
-    id: 3,
-    nome: "Terremoto no Japão",
-    descricao: "Magnitude 7.2",
-    gravidade: 4,
-    localizacao: "Osaka, Japão",
-  },
-  {
-    id: 4,
-    nome: "Granizo em Munique",
-    descricao: "Queda intensa de gelo",
-    gravidade: 2,
-    localizacao: "Munique, Alemanha",
-  },
-  {
-    id: 5,
-    nome: "Vento forte no Chile",
-    descricao: "Rajadas de até 120km/h",
-    gravidade: 4,
-    localizacao: "Punta Arenas, Chile",
-  },
-  {
-    id: 6,
-    nome: "Tempestade severa",
-    descricao: "Raios e inundações",
-    gravidade: 5,
-    localizacao: "Bangkok, Tailândia",
-  },
-  {
-    id: 7,
-    nome: "Deslizamento em Bogotá",
-    descricao: "Encostas cederam após chuva intensa",
-    gravidade: 4,
-    localizacao: "Bogotá, Colômbia",
-  },
-  {
-    id: 8,
-    nome: "Incêndio florestal na Austrália",
-    descricao: "Fogo se espalha rapidamente",
-    gravidade: 5,
-    localizacao: "Nova Gales do Sul, Austrália",
-  },
-];
 
 export default function AlertScreen() {
   const [userType, setUserType] = useState<"admin" | "cliente" | null>(null);
   const [loading, setLoading] = useState(true);
+  const [catastrofes, setCatastrofes] = useState<Catastrofe[]>([]);
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const API_BASE = "http://172.16.71.175:8080";
 
   useEffect(() => {
     const fetchUserType = async () => {
@@ -99,12 +44,35 @@ export default function AlertScreen() {
         }
       } catch (error) {
         console.error("Erro ao buscar tipo de usuário:", error);
-      } finally {
-        setLoading(false);
       }
     };
+
     fetchUserType();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchCatastrofes = async () => {
+        setLoading(true);
+        try {
+          const response = await fetch(`${API_BASE}/catastrofes`);
+          if (response.ok) {
+            const data = await response.json();
+            setCatastrofes(data.content || []);
+          } else {
+            const errorText = await response.text();
+            Alert.alert("Erro", `Erro ao carregar alertas:\n${errorText}`);
+          }
+        } catch (error) {
+          Alert.alert("Erro", "Erro de conexão com o servidor.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchCatastrofes();
+    }, [])
+  );
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem("userType");
@@ -131,14 +99,14 @@ export default function AlertScreen() {
         </Text>
 
         <View style={styles.grid}>
-          {mockAlertas.map((alerta, index) => (
-            <View key={alerta.id} style={styles.cardWrapper}>
+          {catastrofes.map((catastrofe, index) => (
+            <View key={catastrofe.id} style={styles.cardWrapper}>
               <AlertCard
                 index={index}
-                nome={alerta.nome}
-                descricao={alerta.descricao}
-                gravidade={alerta.gravidade}
-                localizacao={alerta.localizacao}
+                nome={catastrofe.nome}
+                descricao={catastrofe.descricao}
+                gravidade={catastrofe.nivelGravidade}
+                localizacao={catastrofe.localizacao}
               />
             </View>
           ))}
