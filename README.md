@@ -1,6 +1,15 @@
 # StormEye Mobile
 
-StormEye é um aplicativo mobile criado com React Native que tem como objetivo **informar, alertar e salvar vidas** em situações de catástrofes naturais. A plataforma permite que administradores cadastrem alertas e que clientes consultem as ocorrências recentes e acessem orientações de segurança.
+## 📌 Descrição da Solução
+
+Em um mundo cada vez mais impactado por eventos climáticos extremos, **estar preparado para enfrentar catástrofes naturais deixou de ser uma opção — tornou-se uma necessidade**. Pensando nisso, desenvolvemos o **StormEye**, um aplicativo mobile com o propósito de **informar, alertar e salvar vidas**.
+
+A proposta nasceu da percepção de uma **lacuna na comunicação de risco**: muitas pessoas não sabem como agir diante de situações como **tornados, enchentes, terremotos, tempestades severas** e diversas outras catástrofes. O StormEye surge como uma **ferramenta acessível e intuitiva** que une **alertas em tempo real** a **guias de sobrevivência detalhados**, garantindo que os usuários saibam exatamente o que fazer **antes, durante e depois** de um desastre.
+
+Mais do que um app, o StormEye é um **aliado na proteção da vida**. Por meio de uma **interface clara**, **navegação simplificada** e **conteúdo educativo cuidadosamente estruturado**, buscamos oferecer **segurança, autonomia e informação confiável** a qualquer pessoa que esteja em uma zona de risco — **mesmo sem conexão com a internet**.
+
+Nosso objetivo é **simples e urgente**: **minimizar danos, preservar vidas e democratizar o acesso à preparação diante do imprevisível**.
+
 
 ## 🌐 Tecnologias utilizadas
 
